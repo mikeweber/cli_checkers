@@ -1,0 +1,15 @@
+GIT
+  remote: git://github.com/mikeweber/checkers.git
+  revision: 891dce0ef7935cefba734522cb7d94fa7cee5ee7
+  specs:
+    checkers (0.2.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  checkers!
