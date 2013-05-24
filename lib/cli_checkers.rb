@@ -1,5 +1,6 @@
+require 'rubygems'
 require 'bundler/setup'
 
 require 'checkers'
-require 'cli_checkers/cli_player'
-require 'cli_checkers/cli_game'
+require_relative 'cli_checkers/cli_player'
+require_relative 'cli_checkers/cli_game'
