@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/mikeweber/checkers.git
-  revision: 891dce0ef7935cefba734522cb7d94fa7cee5ee7
+  revision: 230322186f62af87aba40855b949726cdd7d6a5f
   specs:
-    checkers (0.2.1)
+    checkers (0.2.7)
 
 GEM
   remote: https://rubygems.org/

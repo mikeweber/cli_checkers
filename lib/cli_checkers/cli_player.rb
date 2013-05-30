@@ -7,8 +7,15 @@ class CliPlayer < Player
   def make_move
     puts board_to_s
     piece = request_piece_loop
-    dest = request_move_to_loop(piece)
-    piece.move_to(dest)
+    dest  = request_move_to_loop(piece)
+    begin
+      was_jump = piece.move_to(*dest)
+    rescue => e
+      puts "Could not make move: #{e.message}"
+      make_move
+    end
+    
+    return piece, was_jump
   end
   
   def board_to_s
@@ -34,8 +41,8 @@ class CliPlayer < Player
     while !piece
       piece_position = request_piece
       puts "You asked for the piece at #{piece_position.inspect}"
-      unless piece = self.pieces.detect { |piece| piece.position == piece_position }
-        puts "You don't have a piece there. Please try again."
+      unless piece = self.moveable_pieces.detect { |piece| piece.position == piece_position }
+        puts "You don't have a piece there that can move. Please try again."
       end
     end
     
@@ -44,31 +51,41 @@ class CliPlayer < Player
   
   def request_move_to_loop(piece)
     move = nil
-    while move
+    while !move
       move_to = request_move_to(piece)
-      puts "You asked to move to #{move_to.inspect}"
-      unless move = piece.available_moves.detect { |piece| piece.position == move_to }
+      unless move = piece.legal_moves.detect { |legal_move| legal_move.position == move_to }
         puts "I could not recognize that that move. Please try again."
       end
     end
     
-    return move
+    return move.position
   end
   
   def request_piece
-    message = "#{self.name}'s (#{self.color}) turn. "
-    message += "Enter a piece to move by typing the column and row of the piece to move, separated by a space. e.g. '3 2'" if @first_move
+    message = "#{self.name}'s (#{self.color}) turn."
+    message += " Enter a piece to move by typing the column and row of the piece to move, separated by a space. e.g. '3 2'." if @first_move
+    message += " Your moveable pieces are #{self.moveable_pieces.collect { |piece| piece.position }.inspect}."
     @first_move = false
     puts message
     request_coordinate
   end
   
   def request_move_to(piece)
-    puts "Now enter where you're moving using column and row. Your available moves are #{piece.available_moves_as_coordinates.inspect}"
+    puts "Now enter where you're moving using column and row. Your available moves are #{piece.legal_moves_as_coordinates.inspect}"
     request_coordinate
   end
   
   def request_coordinate
-    gets.strip.split(' ').collect { |x| x.to_i }
+    input = request_input
+    if input =~ /quit|exit/
+      self.you_lose!
+      raise EndGame
+    else
+      input.split(' ').collect { |x| x.to_i }
+    end
+  end
+  
+  def request_input
+    gets.strip
   end
 end
