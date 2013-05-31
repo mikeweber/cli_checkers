@@ -1,3 +1,5 @@
+include Curses
+
 class CliPlayer < Player
   def initialize(*args)
     super
@@ -5,13 +7,13 @@ class CliPlayer < Player
   end
   
   def make_move
-    puts board_to_s
     piece = request_piece_loop
     dest  = request_move_to_loop(piece)
     begin
       was_jump = piece.move_to(*dest)
     rescue => e
-      puts "Could not make move: #{e.message}"
+      CursesHelper.status "Could not make move: #{e.message}"
+      CursesHelper.clear_input
       make_move
     end
     
@@ -25,8 +27,8 @@ class CliPlayer < Player
       output << "#{row}|"
       self.board.cols.each.with_index do |column, col|
         piece = column[row]
-        char = piece.nil? ? ((col + row).odd? ? ' ' : '█') : (piece.color == :black) ? (piece.kinged? ? '◎' : '○') : (piece.kinged? ? '◉' : '●')
-        output << "#{char}|"
+        chr = piece.nil? ? ((col + row).odd? ? ' ' : '█') : (piece.color == :black) ? (piece.kinged? ? '◎' : '○') : (piece.kinged? ? '◉' : '●')
+        output << "#{chr}|"
       end
       output << "\n"
     end
@@ -40,11 +42,12 @@ class CliPlayer < Player
     piece = nil
     while !piece
       piece_position = request_piece
-      puts "You asked for the piece at #{piece_position.inspect}"
+      CursesHelper.status "You asked for the piece at #{piece_position.inspect}"
       unless piece = self.moveable_pieces.detect { |piece| piece.position == piece_position }
-        puts "You don't have a piece there that can move. Please try again."
+        CursesHelper.status "You don't have a piece there that can move. Please try again."
       end
     end
+    CursesHelper.clear_input
     
     return piece
   end
@@ -54,9 +57,10 @@ class CliPlayer < Player
     while !move
       move_to = request_move_to(piece)
       unless move = piece.legal_moves.detect { |legal_move| legal_move.position == move_to }
-        puts "I could not recognize that that move. Please try again."
+        CursesHelper.status "I could not recognize that that move. Please try again."
       end
     end
+    CursesHelper.clear_input
     
     return move.position
   end
@@ -66,26 +70,24 @@ class CliPlayer < Player
     message += " Enter a piece to move by typing the column and row of the piece to move, separated by a space. e.g. '3 2'." if @first_move
     message += " Your moveable pieces are #{self.moveable_pieces.collect { |piece| piece.position }.inspect}."
     @first_move = false
-    puts message
+    CursesHelper.status message
+    CursesHelper.clear_input
     request_coordinate
   end
   
   def request_move_to(piece)
-    puts "Now enter where you're moving using column and row. Your available moves are #{piece.legal_moves_as_coordinates.inspect}"
+    CursesHelper.status "Enter where to move #{piece.position.inspect}. Your available moves are #{piece.legal_moves_as_coordinates.inspect}"
+    CursesHelper.clear_input
     request_coordinate
   end
   
   def request_coordinate
-    input = request_input
+    input = getstr
     if input =~ /quit|exit/
       self.you_lose!
       raise EndGame
     else
       input.split(' ').collect { |x| x.to_i }
     end
-  end
-  
-  def request_input
-    gets.strip
   end
 end
