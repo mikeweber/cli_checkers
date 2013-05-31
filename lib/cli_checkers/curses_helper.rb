@@ -2,21 +2,21 @@ module CursesHelper
   STATUS_LINE = 10
   STATUS_LINE_LENGTH = 200
   
-  def self.display(player)
-    self.write(0, 0, player.board_to_s)
+  def self.display(player, board)
+    write(0, 0, board.to_s)
     
     if player.lost?
       status("Player #{player.name} has lost")
     else
       status("It is #{player.name}`s turn...")
     end
-    self.clear_input
   end
   
   def self.status(message)
     # pad the status with spaces to replace old characters
     message += " " * (STATUS_LINE_LENGTH - message.length)
     write(STATUS_LINE, 0, message)
+    clear_input
   end
   
   def self.clear_input

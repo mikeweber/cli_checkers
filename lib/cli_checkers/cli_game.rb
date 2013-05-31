@@ -1,10 +1,8 @@
 class CliGame < Game
   def self.play
     CursesHelper.status "Enter player 1's (black) name: "
-    CursesHelper.clear_input
     player2 = CliPlayer.new(Curses.getstr.strip)
     CursesHelper.status "Enter player 2's (red) name: "
-    CursesHelper.clear_input
     player1 = CliPlayer.new(Curses.getstr.strip)
     
     game = self.new(player1, player2)

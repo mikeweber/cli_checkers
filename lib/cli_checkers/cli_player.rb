@@ -13,7 +13,6 @@ class CliPlayer < Player
       was_jump = piece.move_to(*dest)
     rescue => e
       CursesHelper.status "Could not make move: #{e.message}"
-      CursesHelper.clear_input
       make_move
     end
     
@@ -47,7 +46,6 @@ class CliPlayer < Player
         CursesHelper.status "You don't have a piece there that can move. Please try again."
       end
     end
-    CursesHelper.clear_input
     
     return piece
   end
@@ -60,7 +58,6 @@ class CliPlayer < Player
         CursesHelper.status "I could not recognize that that move. Please try again."
       end
     end
-    CursesHelper.clear_input
     
     return move.position
   end
@@ -71,13 +68,11 @@ class CliPlayer < Player
     message += " Your moveable pieces are #{self.moveable_pieces.collect { |piece| piece.position }.inspect}."
     @first_move = false
     CursesHelper.status message
-    CursesHelper.clear_input
     request_coordinate
   end
   
   def request_move_to(piece)
     CursesHelper.status "Enter where to move #{piece.position.inspect}. Your available moves are #{piece.legal_moves_as_coordinates.inspect}"
-    CursesHelper.clear_input
     request_coordinate
   end
   
