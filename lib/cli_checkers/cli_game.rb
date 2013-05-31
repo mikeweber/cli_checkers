@@ -3,7 +3,7 @@ class CliGame < Game
     CursesHelper.status "Enter player 1's (black) name: "
     player2 = CliPlayer.new(Curses.getstr.strip)
     CursesHelper.status "Enter player 2's (red) name: "
-    player1 = CliPlayer.new(Curses.getstr.strip)
+    player1 = RandomAIPlayer.new(Curses.getstr.strip)
     
     game = self.new(player1, player2)
     game.play!
@@ -15,7 +15,7 @@ class CliGame < Game
     CursesHelper.write(CursesHelper::STATUS_LINE + 1, 0, "Welcome!")
     
     while playing?
-      CursesHelper.display self.whose_turn
+      CursesHelper.display self.whose_turn, self.board
       begin
         take_turn
       rescue EndGame => eg
