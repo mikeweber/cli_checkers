@@ -10,6 +10,7 @@ module CursesHelper
     else
       status("It is #{player.name}`s turn...")
     end
+    refresh
   end
   
   def self.status(message)
