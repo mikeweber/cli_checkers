@@ -1,0 +1,12 @@
+Description
+===========
+This adds a Command Line Interface to my checkers gem, viewable at https://github.com/mikeweber/checkers
+
+Install
+=======
+This gem uses Bundler for dependency management. With the repo downloaded, run `bundle` to install the Checkers dependency.
+
+How to play
+===========
+From the root directory, run `bundle exec irb -r ./lib/cli_checkers`
+Then from IRB, run `CliGame.play`
